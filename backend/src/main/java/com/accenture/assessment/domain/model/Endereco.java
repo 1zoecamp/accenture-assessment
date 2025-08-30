@@ -6,6 +6,7 @@ import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.Table;
+import jakarta.validation.constraints.NotNull;
 import jakarta.persistence.Column;
 
 @Entity
@@ -16,20 +17,25 @@ public class Endereco extends Auditable {
 	@GeneratedValue(strategy = GenerationType.UUID)
 	private UUID id;
 
+	@NotNull(message = "O CEP não pode ser nulo.")
 	@Column(nullable = false)
 	private String cep;
 
+	@NotNull(message = "O logradouro não pode ser nulo.")
 	@Column(nullable = false)
 	private String logradouro;
 
 	private String complemento;
 
+	@NotNull(message = "O bairro não pode ser nulo.")
 	@Column(nullable = false)
 	private String bairro;
 
+	@NotNull(message = "A localidade não pode ser nula.")
 	@Column(nullable = false)
 	private String localidade;
 
+	@NotNull(message = "A UF não pode ser nula.")
 	@Column(nullable = false)
 	private String uf;
 

@@ -1,9 +1,12 @@
 package com.accenture.assessment.domain.model;
 
 import java.time.LocalDate;
+
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
+
+import com.accenture.assessment.domain.validation.PessoaFisicaInfoRequired;
 
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
@@ -17,25 +20,35 @@ import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToMany;
 import jakarta.persistence.OneToOne;
 import jakarta.persistence.Table;
+import jakarta.validation.constraints.Email;
+import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Size;
 
 @Entity
 @Table(name = "fornecedor")
+@PessoaFisicaInfoRequired
 public class Fornecedor extends Auditable {
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.UUID)
 	private UUID id;
 
+	@NotNull(message = "O documento não pode ser nulo.")
+	@Size(min = 11, max = 14, message = "O documento deve ter entre 11 e 14 caracteres.")
 	@Column(nullable = false, unique = true)
 	private String documento;
 
+	@NotNull(message = "O tipo de pessoa não pode ser nulo.")
 	@Enumerated(EnumType.STRING)
 	@Column(name = "tipo_pessoa", nullable = false)
 	private TipoPessoa tipoPessoa;
 
+	@NotNull(message = "O nome não pode ser nulo.")
 	@Column(nullable = false)
 	private String nome;
 
+	@Email(message = "O email deve ser válido.")
+	@NotNull(message = "O email não pode ser nulo.")
 	@Column(nullable = false)
 	private String email;
 
@@ -44,13 +57,12 @@ public class Fornecedor extends Auditable {
 	@Column(name = "data_nascimento")
 	private LocalDate dataNascimento;
 
-	@OneToOne(cascade = CascadeType.ALL) 
-	@JoinColumn(name = "endereco_id", referencedColumnName = "id", nullable = false) 
+	@OneToOne(cascade = CascadeType.ALL)
+	@JoinColumn(name = "endereco_id", referencedColumnName = "id", nullable = false)
 	private Endereco endereco;
 
 	@ManyToMany(mappedBy = "fornecedores")
 	private List<Empresa> empresas = new ArrayList<>();
-
 
 	// Constructor
 	public Fornecedor() {
