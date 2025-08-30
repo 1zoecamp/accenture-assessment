@@ -1,4 +1,4 @@
-package com.accenture.assessment.model;
+package com.accenture.assessment.domain.model;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -18,7 +18,7 @@ import jakarta.persistence.Table;
 
 @Entity
 @Table(name = "empresa")
-public class Empresa {
+public class Empresa extends Auditable {
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.UUID)
