@@ -1,6 +1,7 @@
 package com.accenture.assessment.domain.model;
 
 import java.util.UUID;
+
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
@@ -48,7 +49,7 @@ public class Endereco extends Auditable {
 		return id;
 	}
 
-	public void setId(UUID id) {
+	protected void setId(UUID id) {
 		this.id = id;
 	}
 

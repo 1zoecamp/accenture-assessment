@@ -56,7 +56,7 @@ public class Empresa extends Auditable {
 		return id;
 	}
 
-	public void setId(UUID id) {
+	protected void setId(UUID id) {
 		this.id = id;
 	}
 
@@ -88,17 +88,13 @@ public class Empresa extends Auditable {
 		return fornecedores;
 	}
 
-	public void setFornecedores(List<Fornecedor> fornecedores) {
-		this.fornecedores = fornecedores;
-	}
-
 	// Extra methods
-	public void adicionarFornecedor(Fornecedor fornecedor) {
+	public void vincularFornecedor(Fornecedor fornecedor) {
 		this.fornecedores.add(fornecedor);
 		fornecedor.getEmpresas().add(this);
 	}
 
-	public void removerFornecedor(Fornecedor fornecedor) {
+	public void desvincularFornecedor(Fornecedor fornecedor) {
 		this.fornecedores.remove(fornecedor);
 		fornecedor.getEmpresas().remove(this);
 	}
