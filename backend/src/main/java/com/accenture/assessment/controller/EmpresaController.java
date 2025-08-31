@@ -25,11 +25,11 @@ import com.accenture.assessment.domain.model.Empresa;
 import com.accenture.assessment.domain.model.Fornecedor;
 import com.accenture.assessment.dto.EmpresaRequestDTO;
 import com.accenture.assessment.dto.EmpresaResponseDTO;
-import com.accenture.assessment.dto.PageResponse;
+import com.accenture.assessment.dto.PageResponseDTO;
 import com.accenture.assessment.dto.VincularFornecedorRequestDTO;
 import com.accenture.assessment.dto.VincularFornecedorResponseDTO;
-import com.accenture.assessment.service.FornecedorService;
 import com.accenture.assessment.service.impl.EmpresaServiceImpl;
+import com.accenture.assessment.service.impl.FornecedorServiceImpl;
 import com.accenture.assessment.service.result.VinculoFornecedorResult;
 
 import io.swagger.v3.oas.annotations.Operation;
@@ -47,18 +47,18 @@ public class EmpresaController {
 	private EmpresaServiceImpl empresaService;
 
 	@Autowired
-	private FornecedorService fornecedorService;
+	private FornecedorServiceImpl fornecedorService;
 
 	@GetMapping
 	@Operation(summary = "Listar empresas", description = "Exibe a lista de empresas cadastradas")
-	public ResponseEntity<PageResponse<Empresa>> listarEmpresas(
+	public ResponseEntity<PageResponseDTO<Empresa>> listarEmpresas(
 			@RequestParam(required = false, name = "nome") String nomeFantasia,
 			@RequestParam(required = false) String cnpj, @ParameterObject Pageable pageable) {
 
 		Page<Empresa> empresas = empresaService.listarEmpresas(nomeFantasia, cnpj, pageable);
 
 		// Converte Page para PageResponse
-		PageResponse<Empresa> empresasResponse = new PageResponse<>(empresas);
+		PageResponseDTO<Empresa> empresasResponse = new PageResponseDTO<>(empresas);
 
 		return ResponseEntity.ok(empresasResponse);
 	}

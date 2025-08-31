@@ -3,7 +3,7 @@ package com.accenture.assessment.dto;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
 @JsonIgnoreProperties(ignoreUnknown = true) // Ignora campos não mapeados
-public class ViaCepResponse {
+public class ViaCepResponseDTO {
 	private String cep;
 	private String logradouro;
 	private String bairro;

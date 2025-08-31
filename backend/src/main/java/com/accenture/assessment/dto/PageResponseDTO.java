@@ -8,7 +8,7 @@ import org.springframework.data.domain.Page;
  * 
  * @param <T> O tipo do conteúdo da página.
  */
-public class PageResponse<T> {
+public class PageResponseDTO<T> {
 
 	private final List<T> content;
 	private final int pageNumber;
@@ -17,7 +17,7 @@ public class PageResponse<T> {
 	private final int totalPages;
 
 	// Constructor
-	public PageResponse(Page<T> page) {
+	public PageResponseDTO(Page<T> page) {
      this.content = page.getContent();
      this.pageNumber = page.getNumber();
      this.pageSize = page.getSize();
