@@ -12,12 +12,11 @@ import jakarta.persistence.Column;
 import jakarta.persistence.EntityListeners;
 import jakarta.persistence.MappedSuperclass;
 
-@MappedSuperclass // campos serão incluídos em classes filhas, mas não gerará uma tabela.
+@MappedSuperclass // inclui os campos em classes filhas, mas não gera uma tabela
 @EntityListeners(AuditingEntityListener.class) // listener de auditoria do Spring.
-@SQLDelete(sql = "UPDATE #{#entityName} SET excluido_em = NOW() WHERE id = ?") // sobrescreve o comando DELETE para implementar o softdelete.
-@SoftDelete // Adiciona um filtro em todas as buscas para trazer apenas os não excluídos.
+@SQLDelete(sql = "UPDATE #{#entityName} SET excluido_em = NOW() WHERE id = ?") // sobrescreve o comando DELETE pelo softDelete										
+@SoftDelete(columnName = "excluido_em") // remove os excluídos de todas as buscas
 public abstract class Auditable {
-
 	@CreatedDate
 	@Column(name = "criado_em", nullable = false, updatable = false)
 	private LocalDateTime criadoEm;
@@ -26,7 +25,7 @@ public abstract class Auditable {
 	@Column(name = "atualizado_em", nullable = false)
 	private LocalDateTime atualizadoEm;
 
-	@Column(name = "excluido_em")
+	@Column(insertable=false, updatable=false)
 	private LocalDateTime excluidoEm;
 
 	// Getters and Setters
