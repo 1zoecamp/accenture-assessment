@@ -64,7 +64,7 @@ public class EmpresaServiceImpl implements EmpresaService {
 	@Transactional
 	public Empresa cadastrarEmpresa(EmpresaRequestDTO empresaDTO) {
 		if (empresaRepository.existsByCnpj(empresaDTO.getCnpj())) {
-			throw new BusinessRuleException("CNPJ já cadastrado no sistema.");
+			throw new BusinessRuleException("CNPJ já cadastrado para outra empresa.");
 		}
 
 		Empresa novaEmpresa = new Empresa();

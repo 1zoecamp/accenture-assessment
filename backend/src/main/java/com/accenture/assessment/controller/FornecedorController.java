@@ -14,8 +14,8 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.accenture.assessment.domain.model.Fornecedor;
-import com.accenture.assessment.dto.PageResponse;
-import com.accenture.assessment.service.FornecedorService;
+import com.accenture.assessment.dto.PageResponseDTO;
+import com.accenture.assessment.service.impl.FornecedorServiceImpl;
 
 import io.swagger.v3.oas.annotations.Parameter;
 
@@ -26,7 +26,7 @@ import jakarta.validation.Valid;
 public class FornecedorController {
 
 	@Autowired
-	private FornecedorService fornecedorService;
+	private FornecedorServiceImpl fornecedorService;
 
 	@PostMapping
 	public ResponseEntity<Fornecedor> criarFornecedor(@Valid @RequestBody Fornecedor fornecedor) {
@@ -36,7 +36,7 @@ public class FornecedorController {
 	}
 
 	@GetMapping
-	public ResponseEntity<PageResponse<Fornecedor>> listar(
+	public ResponseEntity<PageResponseDTO<Fornecedor>> listar(
 			@Parameter(description = "Texto para busca no nome do fornecedor.") @RequestParam(required = false) String nome,
 			@Parameter(description = "Texto para busca no documento do fornecedor.") @RequestParam(required = false) String documento,
 			@ParameterObject Pageable pageable) {
@@ -44,7 +44,7 @@ public class FornecedorController {
 		Page<Fornecedor> fornecedores = fornecedorService.listarPaginado(nome, documento, pageable);
 
 		// Converte Page para PageResponse
-		PageResponse<Fornecedor> fornecedoresResponse = new PageResponse<>(fornecedores);
+		PageResponseDTO<Fornecedor> fornecedoresResponse = new PageResponseDTO<>(fornecedores);
 
 		return ResponseEntity.ok(fornecedoresResponse);
 	}
