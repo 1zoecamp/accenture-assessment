@@ -12,6 +12,5 @@ public interface FornecedorRepository extends JpaRepository<Fornecedor, UUID>, J
 
 	boolean existsByDocumento(String documento);
 
-	// Ver se é realmente necessário 
 	Optional<Fornecedor> findByDocumento(String documento);
 }

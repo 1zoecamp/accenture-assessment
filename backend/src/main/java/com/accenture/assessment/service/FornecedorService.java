@@ -1,6 +1,8 @@
 package com.accenture.assessment.service;
 
+import java.util.List;
 import java.util.Optional;
+import java.util.UUID;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -18,6 +20,10 @@ public class FornecedorService {
 
 	@Autowired
 	private FornecedorRepository fornecedorRepository;
+	
+	public List<Fornecedor> buscarFornecedoresPorId(List<UUID> fornecedoresId) {
+		return fornecedorRepository.findAllById(fornecedoresId);
+	}
 
 	/*
 	 * Verifica se já há um fornecedor com o documento informado cadastrado no

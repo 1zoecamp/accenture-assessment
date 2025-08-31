@@ -38,15 +38,11 @@ public class Empresa extends Auditable {
 	@OneToOne(cascade = CascadeType.ALL)
 	@JoinColumn(name = "endereco_id", referencedColumnName = "id", nullable = false)
 	private Endereco endereco;
-	
+
 	@ManyToMany(cascade = { CascadeType.PERSIST, CascadeType.MERGE })
-	@JoinTable(
-		name = "empresa_fornecedor",
-		joinColumns = @JoinColumn(name = "id_empresa"),
-		inverseJoinColumns = @JoinColumn(name = "id_fornecedor")
-	)
+	@JoinTable(name = "empresa_fornecedor", joinColumns = @JoinColumn(name = "id_empresa"), inverseJoinColumns = @JoinColumn(name = "id_fornecedor"))
 	private List<Fornecedor> fornecedores = new ArrayList<>();
-	
+
 	// Constructor
 	public Empresa() {
 	}

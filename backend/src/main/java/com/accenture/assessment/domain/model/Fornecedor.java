@@ -1,7 +1,7 @@
 package com.accenture.assessment.domain.model;
 
 import java.time.LocalDate;
-
+import java.time.Period;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
@@ -137,7 +137,6 @@ public class Fornecedor extends Auditable {
 		return empresas;
 	}
 
-	
 	// Extra methods
 	public void vincularEmpresa(Empresa empresa) {
 		this.empresas.add(empresa);
@@ -147,5 +146,17 @@ public class Fornecedor extends Auditable {
 	public void desvincularFornecedor(Empresa empresa) {
 		this.empresas.remove(empresa);
 		empresa.getFornecedores().remove(this);
+	}
+
+	public boolean fornecedorEhMenorDeIdade() {
+		LocalDate dataNascimento = this.dataNascimento;
+
+		if (dataNascimento == null || this.tipoPessoa != TipoPessoa.PESSOA_FISICA) {
+			return false;
+		}
+
+		Integer idade = Period.between(dataNascimento, LocalDate.now()).getYears();
+		
+		return idade < 18;
 	}
 }
