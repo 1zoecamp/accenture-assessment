@@ -4,6 +4,7 @@ import java.time.LocalDateTime;
 
 import org.hibernate.annotations.SQLDelete;
 import org.hibernate.annotations.SoftDelete;
+import org.hibernate.annotations.SoftDeleteType;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.LastModifiedDate;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
@@ -15,7 +16,6 @@ import jakarta.persistence.MappedSuperclass;
 @MappedSuperclass // inclui os campos em classes filhas, mas não gera uma tabela
 @EntityListeners(AuditingEntityListener.class) // listener de auditoria do Spring.
 @SQLDelete(sql = "UPDATE #{#entityName} SET excluido_em = NOW() WHERE id = ?") // sobrescreve o comando DELETE pelo softDelete										
-@SoftDelete(columnName = "excluido_em") // remove os excluídos de todas as buscas
 public abstract class Auditable {
 	@CreatedDate
 	@Column(name = "criado_em", nullable = false, updatable = false)
@@ -25,7 +25,8 @@ public abstract class Auditable {
 	@Column(name = "atualizado_em", nullable = false)
 	private LocalDateTime atualizadoEm;
 
-	@Column(insertable=false, updatable=false)
+	@SoftDelete(strategy = SoftDeleteType.DELETED) // remove os excluídos de todas as buscas
+	@Column(name = "excluido_em", insertable=false, updatable=false)
 	private LocalDateTime excluidoEm;
 
 	// Getters and Setters
