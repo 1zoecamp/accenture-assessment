@@ -1,5 +1,6 @@
 package com.accenture.assessment.controller;
 
+import org.springdoc.core.annotations.ParameterObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -10,7 +11,10 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.accenture.assessment.domain.model.Empresa;
+import com.accenture.assessment.dto.PageResponse;
 import com.accenture.assessment.service.EmpresaService;
+
+import io.swagger.v3.oas.annotations.Parameter;
 
 @RestController
 @RequestMapping("/empresas")
@@ -20,11 +24,16 @@ public class EmpresaController {
 	private EmpresaService empresaService;
 
 	@GetMapping
-	public ResponseEntity<Page<Empresa>> listar(@RequestParam(required = false, name = "nome") String nomeFantasia,
-			@RequestParam(required = false) String cnpj, Pageable pageable) {
+	public ResponseEntity<PageResponse<Empresa>> listar(
+			@Parameter(description = "Texto para busca no nome fantasia da empresa.") @RequestParam(required = false, name = "nome") String nomeFantasia,
+			@RequestParam(required = false) String cnpj, @ParameterObject Pageable pageable) {
 
 		Page<Empresa> empresas = empresaService.listarPaginado(nomeFantasia, cnpj, pageable);
-		return ResponseEntity.ok(empresas);
+
+		// Converte Page para PageResponse
+		PageResponse<Empresa> empresasResponse = new PageResponse<>(empresas);
+
+		return ResponseEntity.ok(empresasResponse);
 	}
 
 	// ... outros endpoints para Empresa ...
