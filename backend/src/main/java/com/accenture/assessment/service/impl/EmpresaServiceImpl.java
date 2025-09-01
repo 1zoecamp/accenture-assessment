@@ -124,12 +124,20 @@ public class EmpresaServiceImpl implements EmpresaService {
 		List<String> avisos = new ArrayList<>();
 
 		for (Fornecedor fornecedor : fornecedores) {
+			// Checa se fornecedor já vinculado
+			if (empresa.getFornecedores().contains(fornecedor)) {
+				avisos.add("O fornecedor '" + fornecedor.getNome() + "' (Documento: " + fornecedor.getDocumento()
+						+ ") já está vinculado à empresa.");
+				continue;
+			}
+
+			// Verificação para empresas do PR
 			if ("PR".equals(empresa.getEndereco().getUf()) && fornecedor.fornecedorEhMenorDeIdade()) {
 				avisos.add("O fornecedor '" + fornecedor.getNome() + "' (Documento: " + fornecedor.getDocumento()
 						+ ") não foi vinculado por ser menor de idade.");
-			} else {
-				empresa.vincularFornecedor(fornecedor);
+				continue;
 			}
+			empresa.vincularFornecedor(fornecedor);
 		}
 
 		Empresa empresaSalva = empresaRepository.save(empresa);
@@ -143,7 +151,7 @@ public class EmpresaServiceImpl implements EmpresaService {
 		Empresa empresa = empresaRepository.findById(empresaId).orElseThrow(NoSuchElementException::new);
 
 		List<Fornecedor> fornecedores = fornecedorRepository.findAllById(fornecedorIds);
-		
+
 		for (Fornecedor fornecedor : fornecedores) {
 			empresa.desvincularFornecedor(fornecedor);
 		}
