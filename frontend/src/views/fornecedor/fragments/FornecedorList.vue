@@ -1,102 +1,36 @@
 <script setup lang="ts">
-import type { Fornecedor, PaginatedResponse } from '@/types'
-import { onMounted, computed } from 'vue'
-import { useGet } from '@/composables/useApi'
-
-const {
-  data: response,
-  isLoading,
-  error,
-  get: fetchFornecedores,
-} = useGet<PaginatedResponse<Fornecedor>>()
-
-onMounted(() => {
-  fetchFornecedores('/fornecedores')
-})
-
-const fornecedores = computed(() => response.value?.content || [])
+import { EntityTable } from '@/components'
 </script>
 
 <template>
-  <div class="fornecedor-container">
-    <h1>Lista de Fornecedores</h1>
+  <EntityTable url="fornecedores">
+    <template #columns>
+      <Column field="nome" header="Nome / Razão Social" sortable style="min-width: 16rem"></Column>
 
-    <div v-if="isLoading" class="loading">Carregando fornecedores...</div>
+      <Column field="documento" header="Documento" style="min-width: 10rem"></Column>
 
-    <div v-else-if="error" class="error">
-      <h3>Ocorreu um erro ao buscar os dados</h3>
-      <p>{{ error.message }}</p>
-      <pre>{{ error.response?.data }}</pre>
-    </div>
+      <Column field="email" header="Email" style="min-width: 14rem"></Column>
 
-    <div v-else-if="response">
-      <div class="pagination-info">
-        <p>
-          Página {{ response.pageNumber + 1 }} de {{ response.totalPages }} | Exibindo
-          {{ fornecedores.length }} de {{ response.totalElements }} fornecedores.
-        </p>
-      </div>
+      <Column header="Cidade" style="min-width: 12rem">
+        <template #body="slotProps">
+          <span>{{ slotProps.data.endereco.localidade }} - {{ slotProps.data.endereco.uf }}</span>
+        </template>
+      </Column>
 
-      <table class="fornecedor-table">
-        <thead>
-          <tr>
-            <th>Nome / Razão Social</th>
-            <th>Documento</th>
-            <th>Email</th>
-            <th>Cidade</th>
-            <th>Tipo</th>
-          </tr>
-        </thead>
-        <tbody>
-          <tr v-for="fornecedor in fornecedores" :key="fornecedor.id">
-            <td>{{ fornecedor.nome }}</td>
-            <td>{{ fornecedor.documento }}</td>
-            <td>{{ fornecedor.email }}</td>
-            <td>{{ fornecedor.endereco.localidade }} - {{ fornecedor.endereco.uf }}</td>
-            <td>{{ fornecedor.tipoPessoa === 'PESSOA_FISICA' ? 'P. Física' : 'P. Jurídica' }}</td>
-          </tr>
-        </tbody>
-      </table>
-    </div>
-  </div>
+      <Column header="Tipo" sortable field="tipoPessoa" style="min-width: 8rem">
+        <template #body="slotProps">
+          <span
+            :class="[
+              'px-2 py-1 text-xs font-semibold rounded-full',
+              slotProps.data.tipoPessoa === 'PESSOA_FISICA'
+                ? 'bg-blue-100 text-blue-800'
+                : 'bg-green-100 text-green-800',
+            ]"
+          >
+            {{ slotProps.data.tipoPessoa === 'PESSOA_FISICA' ? 'P. Física' : 'P. Jurídica' }}
+          </span>
+        </template>
+      </Column>
+    </template>
+  </EntityTable>
 </template>
-
-<style scoped>
-.fornecedor-container {
-  font-family: sans-serif;
-  padding: 20px;
-}
-.loading,
-.error {
-  padding: 20px;
-  border-radius: 8px;
-  text-align: center;
-}
-.loading {
-  background-color: #eef;
-}
-.error {
-  background-color: #fdd;
-  color: #c00;
-}
-.pagination-info {
-  margin-bottom: 16px;
-  color: #555;
-}
-.fornecedor-table {
-  width: 100%;
-  border-collapse: collapse;
-}
-.fornecedor-table th,
-.fornecedor-table td {
-  border: 1px solid #ddd;
-  padding: 12px;
-  text-align: left;
-}
-.fornecedor-table th {
-  background-color: #f2f2f2;
-}
-.fornecedor-table tbody tr:nth-child(even) {
-  background-color: #f9f9f9;
-}
-</style>

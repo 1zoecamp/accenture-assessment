@@ -1,9 +1,10 @@
 <script setup lang="ts">
+import { EntityLayout } from '@/components'
 import FornecedorList from './fragments/FornecedorList.vue'
 </script>
 
 <template>
-  <h1 class="text-2xl">Fornecedor</h1>
-  <br />
-  <FornecedorList />
+  <EntityLayout entity="Fornecedor" title="Lista de Fornecedores">
+    <FornecedorList />
+  </EntityLayout>
 </template>
