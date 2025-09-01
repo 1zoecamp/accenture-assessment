@@ -1,62 +1,77 @@
 package com.accenture.assessment.exception;
 
 import java.time.LocalDateTime;
+import java.util.Map;
+
+import com.fasterxml.jackson.annotation.JsonInclude;
 
 /*
- * Estrutura a resposta de erro para exceptions
+ * Estrutura padrão para exceptions tratadas
  */
+@JsonInclude(JsonInclude.Include.NON_NULL)
 public class ApiError {
 
- private LocalDateTime timestamp;
- private Integer status;
- private String error;
- private String message;
- private String path;
+	private LocalDateTime timestamp;
+	private Integer status;
+	private String error;
+	private String message;
+	private String path;
+	private Map<String, String> validationErrors;
 
- // Constructor
- public ApiError(Integer status, String error, String message, String path) {
-     this.timestamp = LocalDateTime.now();
-     this.status = status;
-     this.error = error;
-     this.message = message;
-     this.path = path;
- }
+	// Construtor padrão
+	public ApiError(Integer status, String error, String message, String path) {
+		this.timestamp = LocalDateTime.now();
+		this.status = status;
+		this.error = error;
+		this.message = message;
+		this.path = path;
+	}
 
- // Getters and Setters
- public LocalDateTime getTimestamp() {
-     return timestamp;
- }
+	// Construtor para erros de validação
+	public ApiError(Integer status, String error, String message, String path, Map<String, String> validationErrors) {
+		this(status, error, message, path);
+		this.validationErrors = validationErrors;
+	}
 
-public Integer getStatus() {
-	return status;
-}
+	// Getters e Setters
+	public LocalDateTime getTimestamp() {
+		return timestamp;
+	}
 
-public void setStatus(Integer status) {
-	this.status = status;
-}
+	public Integer getStatus() {
+		return status;
+	}
 
-public String getError() {
-	return error;
-}
+	public void setStatus(Integer status) {
+		this.status = status;
+	}
 
-public void setError(String error) {
-	this.error = error;
-}
+	public String getError() {
+		return error;
+	}
 
-public String getMessage() {
-	return message;
-}
+	public void setError(String error) {
+		this.error = error;
+	}
 
-public void setMessage(String message) {
-	this.message = message;
-}
+	public String getMessage() {
+		return message;
+	}
 
-public String getPath() {
-	return path;
-}
+	public Map<String, String> getValidationErrors() {
+		return validationErrors;
+	}
 
-public void setPath(String path) {
-	this.path = path;
-}
+	public void setMessage(String message) {
+		this.message = message;
+	}
+
+	public String getPath() {
+		return path;
+	}
+
+	public void setPath(String path) {
+		this.path = path;
+	}
 
 }
