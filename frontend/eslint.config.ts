@@ -17,9 +17,18 @@ export default defineConfigWithVueTs(
 
   globalIgnores(['**/dist/**', '**/dist-ssr/**', '**/coverage/**']),
 
+  {
+    files: ['**/*.{ts,tsx,vue}'],
+    languageOptions: {
+      parserOptions: {
+        project: true,
+      },
+    },
+  },
+
   pluginVue.configs['flat/essential'],
   vueTsConfigs.recommended,
-  
+
   {
     ...pluginVitest.configs.recommended,
     files: ['src/**/__tests__/*'],
