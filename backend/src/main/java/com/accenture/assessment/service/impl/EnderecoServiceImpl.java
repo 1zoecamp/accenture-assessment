@@ -7,9 +7,10 @@ import org.springframework.stereotype.Service;
 //import com.accenture.assessment.domain.repository.EnderecoRepository;
 //import com.accenture.assessment.dto.ViaCepResponse;
 import com.accenture.assessment.exception.BusinessRuleException;
+import com.accenture.assessment.service.EnderecoService;
 
 @Service
-public class EnderecoServiceImpl {
+public class EnderecoServiceImpl implements EnderecoService {
 
 	//@Autowired
 	//private EnderecoRepository enderecoRepository;
