@@ -1,31 +1,29 @@
 package com.accenture.assessment.dto;
 
-import java.util.List;
-import java.util.UUID;
-import java.util.stream.Collectors;
-
 import com.accenture.assessment.domain.model.Empresa;
 
-public final class EmpresaResponseDTO {
+import java.util.UUID;
 
+/*
+ * Utilizada para exibição de dados básicos da Empresa em listagens de Fornecedor.
+ * Contém um EnderecoDTO para garantir o desacoplamento da API com a entidade.
+ */
+public final class EmpresaBasicDTO {
 	private final UUID id;
 	private final String cnpj;
 	private final String nomeFantasia;
 	private final EnderecoDTO endereco;
-	private final List<FornecedorBasicDTO> fornecedores;
 
 	// Construtor principal
-	public EmpresaResponseDTO(UUID id, String cnpj, String nomeFantasia, EnderecoDTO endereco,
-			List<FornecedorBasicDTO> fornecedores) {
+	public EmpresaBasicDTO(UUID id, String cnpj, String nomeFantasia, EnderecoDTO endereco) {
 		this.id = id;
 		this.cnpj = cnpj;
 		this.nomeFantasia = nomeFantasia;
 		this.endereco = endereco;
-		this.fornecedores = fornecedores;
 	}
 
 	// Construtor de conveniência
-	public EmpresaResponseDTO(Empresa empresa) {
+	public EmpresaBasicDTO(Empresa empresa) {
 		this.id = empresa.getId();
 		this.cnpj = empresa.getCnpj();
 		this.nomeFantasia = empresa.getNomeFantasia();
@@ -34,10 +32,6 @@ public final class EmpresaResponseDTO {
 				empresa.getEndereco().getLocalidade(), empresa.getEndereco().getUf()
 
 		);
-
-		// Mapeia a lista de entidades para a lista de DTOs simples
-		this.fornecedores = empresa.getFornecedores().stream().map(FornecedorBasicDTO::new)
-				.collect(Collectors.toList());
 	}
 
 	// Getters
@@ -45,19 +39,15 @@ public final class EmpresaResponseDTO {
 		return id;
 	}
 
-	public String getCnpj() {
-		return cnpj;
-	}
-
 	public String getNomeFantasia() {
 		return nomeFantasia;
 	}
 
-	public EnderecoDTO getEndereco() {
-		return endereco;
+	public String getCnpj() {
+		return cnpj;
 	}
 
-	public List<FornecedorBasicDTO> getFornecedores() {
-		return fornecedores;
+	public EnderecoDTO getEndereco() {
+		return endereco;
 	}
 }

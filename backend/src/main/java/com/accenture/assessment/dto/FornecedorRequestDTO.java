@@ -2,7 +2,6 @@ package com.accenture.assessment.dto;
 
 import java.time.LocalDate;
 
-import com.accenture.assessment.domain.model.TipoPessoa;
 import com.accenture.assessment.domain.validation.ValidDocumento;
 
 import jakarta.persistence.Column;
@@ -34,7 +33,7 @@ public class FornecedorRequestDTO {
 	private final EnderecoDTO endereco;
 
 	// Constructor
-	public FornecedorRequestDTO(String documento, TipoPessoa tipoPessoa, String nome, String email, String rg,
+	public FornecedorRequestDTO(String documento, String nome, String email, String rg,
 			LocalDate dataNascimento, EnderecoDTO endereco) {
 		this.documento = documento;
 		this.nome = nome;

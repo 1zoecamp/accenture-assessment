@@ -51,24 +51,28 @@ public class EmpresaController {
 
 	@GetMapping
 	@Operation(summary = "Listar empresas", description = "Exibe a lista de empresas cadastradas")
-	public ResponseEntity<PageResponseDTO<Empresa>> listarEmpresas(
+	public ResponseEntity<PageResponseDTO<EmpresaResponseDTO>> listarEmpresas(
 			@RequestParam(required = false, name = "nome") String nomeFantasia,
 			@RequestParam(required = false) String cnpj, @ParameterObject Pageable pageable) {
 
-		Page<Empresa> empresas = empresaService.listarEmpresas(nomeFantasia, cnpj, pageable);
+		Page<Empresa> empresasPage = empresaService.listarEmpresas(nomeFantasia, cnpj, pageable);
 
-		// Converte Page para PageResponse
-		PageResponseDTO<Empresa> empresasResponse = new PageResponseDTO<>(empresas);
+		// Converte cada Empresa em um EmpresaResponseDTO (construtor de conveniência)
+		Page<EmpresaResponseDTO> empresasDtoPage = empresasPage.map(EmpresaResponseDTO::new);
+		PageResponseDTO<EmpresaResponseDTO> responseFinal = new PageResponseDTO<>(empresasDtoPage);
 
-		return ResponseEntity.ok(empresasResponse);
+		return ResponseEntity.ok(responseFinal);
 	}
 
 	@GetMapping("/{id}")
 	@Operation(summary = "Buscar empresa", description = "Busca uma empresa pelo id")
-	public ResponseEntity<Empresa> buscarEmpresaPorId(@PathVariable("id") UUID id) {
-		var empresa = empresaService.buscarEmpresaPorId(id);
+	public ResponseEntity<EmpresaResponseDTO> buscarEmpresaPorId(@PathVariable("id") UUID id) {
+		Empresa empresa = empresaService.buscarEmpresaPorId(id);
 
-		return ResponseEntity.ok(empresa);
+		// Converte a entidade salva para o DTO de resposta
+		EmpresaResponseDTO responseDTO = new EmpresaResponseDTO(empresa);
+
+		return ResponseEntity.ok(responseDTO);
 	}
 
 	@PostMapping
