@@ -1,5 +1,13 @@
 @import 'tailwindcss';
 
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
 html {
+  min-height: 100vh;
   font-size: 16px;
+  line-height: 1.6;
 }
