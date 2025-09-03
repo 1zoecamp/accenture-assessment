@@ -70,6 +70,6 @@ onMounted(() => {
         @on-delete="(e: Empresa) => deleteEmpresa(e)"
       />
     </template>
-    <template #form><EmpresaForm /></template>
+    <template #form><EmpresaForm :refetch /></template>
   </EntityLayout>
 </template>
