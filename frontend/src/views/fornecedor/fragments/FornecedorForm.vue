@@ -7,6 +7,7 @@ import { z } from 'zod'
 import { useToast } from 'primevue/usetoast'
 import { zodResolver } from '@primevue/forms/resolvers/zod'
 import { useGet, usePost, usePut } from '@/composables/useApi'
+import { isValidCNPJ, isValidCPF } from '@/utils'
 
 /** Types */
 type FornecedorData = Omit<Fornecedor, 'id'>
@@ -67,7 +68,6 @@ const formData = ref<FornecedorData>({
 
 onMounted(() => {
   if (initialData) {
-    console.log({ initialData })
     formTemplateRef.value?.setValues(initialData)
     formTemplateRef.value?.setFieldValue('endereco.cep', initialData.endereco.cep)
     formTemplateRef.value?.setFieldValue('endereco.complemento', initialData.endereco.complemento)
@@ -148,7 +148,19 @@ const resolver = ref(
       documento: z
         .string()
         .min(1, { message: 'O documento é obrigatório' })
-        .transform((str) => str.replace(/\D/g, '')),
+        .transform((str) => str.replace(/\D/g, ''))
+        .refine(
+          (str) => {
+            if (str.length == 14) {
+              return isValidCNPJ(str)
+            }
+            if (str.length == 11) {
+              return isValidCPF(str)
+            }
+            return true
+          },
+          { message: 'CPF/CNPJ inválido' },
+        ),
       email: z.email({ message: 'Email inválido' }),
       dataNascimento: z
         .date()
@@ -219,13 +231,11 @@ const onFormSubmit = (e: FormSubmitEvent) => {
     if (editMode) {
       put(`/fornecedores/${(initialData as Fornecedor).id}`, e.values as FornecedorData).then(
         () => {
-          console.log(putError.value)
           submitActions(putError.value ? false : true, true, e)
         },
       )
     } else {
       post(`/fornecedores`, e.values as FornecedorData).then(() => {
-        console.log(postError.value)
         submitActions(postError.value ? false : true, false, e)
       })
     }

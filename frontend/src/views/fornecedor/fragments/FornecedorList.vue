@@ -53,9 +53,9 @@ const emitNewEvent = (name: 'onDelete' | 'onEdit' | 'onFilter', event: Event) =>
       </Column>
       <Column field="email" header="Email" class="min-w-[14rem]" />
       <Column field="endereco.cep" header="CEP" class="min-w-[8rem]" />
-      <Column header="Cidade" class="min-w-[12rem]">
-        <template #body="slotProps">
-          <span>{{ slotProps.data.endereco.localidade }} - {{ slotProps.data.endereco.uf }}</span>
+      <Column header="Cidade" class="min-w-[10rem]">
+        <template #body="{ data }">
+          <span>{{ data.endereco.localidade }} - {{ data.endereco.uf }}</span>
         </template>
       </Column>
     </template>
