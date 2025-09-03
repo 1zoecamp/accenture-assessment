@@ -36,7 +36,7 @@ export function useGet<T, P extends Record<string, any> = Record<string, any>>()
  * @template T - O tipo de dado esperado na resposta (ex: o objeto criado).
  * @template P - O tipo do payload (corpo da requisição) enviado.
  */
-export function usePost<T, P>() {
+export function usePost<T, P = T>() {
   const data: Ref<T | null> = ref(null);
   const isLoading: Ref<boolean> = ref(false);
   const error: Ref<AxiosError | null> = ref(null);
@@ -65,7 +65,7 @@ export function usePost<T, P>() {
  * @template T - O tipo de dado esperado na resposta (ex: o objeto atualizado).
  * @template P - O tipo do payload (corpo da requisição) enviado.
  */
-export function usePut<T, P>() {
+export function usePut<T, P = T>() {
   const data: Ref<T | null> = ref(null);
   const isLoading: Ref<boolean> = ref(false);
   const error: Ref<AxiosError | null> = ref(null);

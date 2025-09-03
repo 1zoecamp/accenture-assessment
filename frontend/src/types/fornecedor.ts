@@ -7,11 +7,10 @@ import type { Endereco } from "./endereco";
 export interface Fornecedor {
   id: string;
   documento: string;
-  tipoPessoa: 'PESSOA_JURIDICA' | 'PESSOA_FISICA'; // Usando tipos literais para mais segurança
   nome: string;
   email: string;
   rg: string | null;
-  dataNascimento: string | null;
+  dataNascimento: Date | null;
   endereco: Endereco;
-  empresas: Empresa[];
+  empresas?: Empresa[];
 }
