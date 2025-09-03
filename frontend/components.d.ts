@@ -8,19 +8,39 @@ export {}
 /* prettier-ignore */
 declare module 'vue' {
   export interface GlobalComponents {
+    BasicForm: typeof import('./src/components/forms/BasicForm.vue')['default']
     Button: typeof import('primevue/button')['default']
     Column: typeof import('primevue/column')['default']
+    ConfirmDialog: typeof import('primevue/confirmdialog')['default']
     DataTable: typeof import('primevue/datatable')['default']
+    DatePicker: typeof import('primevue/datepicker')['default']
     Dialog: typeof import('primevue/dialog')['default']
     DialogButton: typeof import('./src/components/buttons/DialogButton.vue')['default']
+    DialogFormButton: typeof import('./src/components/buttons/DialogFormButton.vue')['default']
     Divider: typeof import('primevue/divider')['default']
+    Dropdown: typeof import('primevue/dropdown')['default']
+    EditButton: typeof import('./src/components/tables/fragments/EditButton.vue')['default']
     EntityLayout: typeof import('./src/components/layouts/EntityLayout.vue')['default']
     EntityTable: typeof import('./src/components/tables/EntityTable.vue')['default']
     ErrorMessage: typeof import('./src/components/tables/fragments/ErrorMessage.vue')['default']
+    FloatLabel: typeof import('primevue/floatlabel')['default']
+    Form: typeof import('@primevue/forms/form')['default']
+    FormFooter: typeof import('./src/components/forms/FormFooter.vue')['default']
+    IconField: typeof import('primevue/iconfield')['default']
+    IftaLabel: typeof import('primevue/iftalabel')['default']
+    InputIcon: typeof import('primevue/inputicon')['default']
+    InputMask: typeof import('primevue/inputmask')['default']
+    InputText: typeof import('primevue/inputtext')['default']
+    Message: typeof import('primevue/message')['default']
     RouterLink: typeof import('vue-router')['RouterLink']
     RouterView: typeof import('vue-router')['RouterView']
+    Select: typeof import('primevue/select')['default']
     SelectButton: typeof import('primevue/selectbutton')['default']
     Skeleton: typeof import('primevue/skeleton')['default']
+    Toast: typeof import('primevue/toast')['default']
     ViewGroupButton: typeof import('./src/components/buttons/ViewGroupButton.vue')['default']
+  }
+  export interface GlobalDirectives {
+    Tooltip: typeof import('primevue/tooltip')['default']
   }
 }
