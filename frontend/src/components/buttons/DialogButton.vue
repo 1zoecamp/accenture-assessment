@@ -21,7 +21,7 @@ provide('openDialog', () => (visible.value = true))
 <template>
   <Button
     :label="button?.label"
-    v-tooltip.top="`${button?.tooltip}`"
+    v-tooltip.top="button?.tooltip ?? null"
     @click="handleClick()"
     v-bind="$attrs"
   />

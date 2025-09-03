@@ -20,6 +20,7 @@ declare module 'vue' {
     Divider: typeof import('primevue/divider')['default']
     Dropdown: typeof import('primevue/dropdown')['default']
     EditButton: typeof import('./src/components/tables/fragments/EditButton.vue')['default']
+    EnderecoForm: typeof import('./src/components/forms/EnderecoForm.vue')['default']
     EntityLayout: typeof import('./src/components/layouts/EntityLayout.vue')['default']
     EntityTable: typeof import('./src/components/tables/EntityTable.vue')['default']
     ErrorMessage: typeof import('./src/components/tables/fragments/ErrorMessage.vue')['default']
