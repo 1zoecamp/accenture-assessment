@@ -1,33 +1,39 @@
 <script setup lang="ts" generic="T">
-import type { DataTablePageEvent } from 'primevue/datatable'
-import type { PaginatedResponse } from '@/types'
-import { onMounted, computed, ref } from 'vue'
-import { useGet } from '@/composables/useApi'
+import type { CustomFormProps } from '@/types'
+import { useConfirm, type DataTableFilterEvent, type DataTableFilterMeta } from 'primevue'
+import { ref } from 'vue'
+import { FilterMatchMode } from '@primevue/core/api'
+import DialogButton from '../buttons/DialogButton.vue'
 
-const { url } = defineProps<{ url: string }>()
-const { data: response, isLoading, error, get: fetch } = useGet<PaginatedResponse<T>>()
+defineProps<CustomFormProps<T>>()
 
-// Obtenção dos dados
-const fetchData = (page = 0) => {
-  fetch(`/${url}?page=${page}&size=10`)
+const confirm = useConfirm()
+const emit = defineEmits(['delete', 'openEdit', 'filter', 'closeEdit'])
+
+const deleteRegistro = (registro: T) => {
+  confirm.require({
+    message: 'Tem certeza que deseja excluir o registro selecionado?',
+    header: 'Confirmar exclusão',
+    icon: 'pi pi-exclamation-triangle',
+    rejectProps: {
+      label: 'Cancelar',
+      severity: 'secondary',
+      outlined: true,
+    },
+    acceptProps: {
+      label: 'Excluir',
+      severity: 'danger',
+    },
+    accept: () => {
+      emit('delete', registro)
+    },
+  })
 }
 
-onMounted(() => {
-  fetchData(0)
+const filters = ref<DataTableFilterMeta>({
+  nome: { value: null, matchMode: FilterMatchMode.CONTAINS },
+  documento: { value: null, matchMode: FilterMatchMode.CONTAINS },
 })
-
-// Armazena o estado da paginação e do filtro
-const page = ref(0)
-// const filter = ref('');
-
-// Lista de registros da entidade
-const registros = computed(() => response.value?.content || [])
-
-// Controle de paginação
-const onPageChange = (event: DataTablePageEvent) => {
-  fetchData(event.page)
-  page.value = event.page || 0
-}
 </script>
 
 <template>
@@ -36,38 +42,63 @@ const onPageChange = (event: DataTablePageEvent) => {
 
     <div v-else class="datatable-container p-2 bg-slate-100 shadow-sm">
       <DataTable
+        v-model:filters="filters"
         dataKey="id"
         :value="registros"
-        :loading="isLoading"
+        :loading="loading"
         :totalRecords="response?.totalElements"
         :rows="10"
+        filterDisplay="menu"
+        lazy
+        removableSort
+        stripedRows
         paginator
-        @page="onPageChange"
         paginatorTemplate="FirstPageLink PrevPageLink PageLinks CurrentPageReport NextPageLink LastPageLink RowsPerPageDropdown"
         currentPageReportTemplate="Exibindo {first} a {last} de {totalRecords} registros"
         :rowsPerPageOptions="[10, 25, 50]"
-        removableSort
-        stripedRows
+        @page="onPageChange"
+        @filter="(e: DataTableFilterEvent) => emit('filter', e)"
       >
         <!-- Configuração do footer (paginação) -->
         <template #paginatorstart></template>
         <template #paginatorend>
-          <Button severity="contrast" icon="pi pi-refresh" text @click="fetchData(page)" />
+          <Button severity="contrast" icon="pi pi-refresh" text @click="refetch()" />
         </template>
 
         <!-- Definição das colunas da tabela -->
         <slot name="columns" />
-
+        <Column header="Ações" field="tipoPessoa" class="w-32">
+          <template #body="{ data }">
+            <div class="table-actions-group inline-flex gap-2">
+              <DialogButton
+                :button="{ tooltip: 'Editar registro' }"
+                icon="pi pi-pencil"
+                severity="secondary"
+                class="!p-1"
+                :dialog="{ header: 'Editar registro' }"
+                @click="emit('openEdit', data)"
+                @close="emit('closeEdit')"
+              >
+                <slot name="editform" :data />
+              </DialogButton>
+              <Button
+                v-tooltip.top="'Excluir registro'"
+                icon="pi pi-times"
+                severity="secondary"
+                @click="deleteRegistro(data)"
+                class="!p-1 !text-red-800 !bg-red-50 hover:!bg-red-200 hover:!border-red-200"
+              />
+            </div>
+          </template>
+        </Column>
         <!-- Demais estados da tabela -->
         <template #empty>
           <div class="text-center p-4 text-gray-500">Nenhum registro encontrado.</div>
         </template>
 
         <template #loading>
-          <div class="p-4">
-            <div v-for="n in 5" :key="n" class="flex items-center mb-4">
-              <Skeleton height="2rem" width="100%" />
-            </div>
+          <div class="h-96 p-4 flex items-center justify-center">
+            <i class="pi pi-spin pi-spinner !text-3xl text-slate-600"></i>
           </div>
         </template>
       </DataTable>

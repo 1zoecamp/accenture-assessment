@@ -1,4 +1,4 @@
-<script setup lang="ts">
+<script setup lang="ts" generic="T">
 import DialogButton from '../buttons/DialogButton.vue'
 
 type EntityLayoutProps = {
@@ -15,9 +15,9 @@ defineProps<EntityLayoutProps>()
       :button="{ label: `Cadastrar ${entity.toLowerCase()}` }"
       :dialog="{ header: `Cadastro de ${entity.toLowerCase()}` }"
     >
-      <slot name="dialog">Formulário</slot>
+      <slot name="form" />
     </DialogButton>
   </div>
   <br />
-  <slot />
+  <slot name="list" />
 </template>
