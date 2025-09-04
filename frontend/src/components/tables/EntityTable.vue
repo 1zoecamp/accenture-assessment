@@ -1,17 +1,22 @@
 <script setup lang="ts" generic="T">
-import type { CustomFormProps } from '@/types'
-import { useConfirm, type DataTableFilterEvent, type DataTableFilterMeta } from 'primevue'
+import type { CustomTableFormProps } from '@/types'
+import {
+  useConfirm,
+  type DataTableFilterEvent,
+  type DataTableFilterMeta,
+  type DataTableRowSelectEvent,
+} from 'primevue'
 import { ref } from 'vue'
 import { FilterMatchMode } from '@primevue/core/api'
 import DialogButton from '../buttons/DialogButton.vue'
 
-defineProps<CustomFormProps<T> & { selectMode?: boolean }>()
+defineProps<CustomTableFormProps<T> & { selectMode?: boolean }>()
 
 const confirm = useConfirm()
-const emit = defineEmits(['delete', 'openEdit', 'filter', 'closeEdit'])
+const emit = defineEmits(['delete', 'openEdit', 'filter', 'closeEdit', 'selected'])
 
 const expandedRows = ref({})
-const selectedRows = ref()
+const selectedRows = ref<T[]>()
 
 const deleteRegistro = (registro: T) => {
   confirm.require({
@@ -64,6 +69,7 @@ const filters = ref<DataTableFilterMeta>({
         :rowsPerPageOptions="[10, 25, 50]"
         @page="onPageChange"
         @filter="(e: DataTableFilterEvent) => emit('filter', e)"
+        @update:selection="(e: DataTableRowSelectEvent) => emit('selected', e)"
       >
         <!-- Configuração do footer (paginação) -->
         <template #paginatorstart></template>

@@ -1,15 +1,15 @@
 <script setup lang="ts">
-import type { CustomFormProps, Empresa, Fornecedor, PaginatedResponse } from '@/types'
+import type { CustomTableFormProps, Empresa, Fornecedor, PaginatedResponse } from '@/types'
 import { defineEmits, ref } from 'vue'
 import { EntityTable } from '@/components'
 import FornecedorForm from './FornecedorForm.vue'
 import { useGet } from '@/composables/useApi'
 import type { DataTablePageEvent } from 'primevue'
 
-defineProps<CustomFormProps<Fornecedor> & { selectMode?: boolean }>()
+defineProps<CustomTableFormProps<Fornecedor> & { selectMode?: boolean }>()
 
-const emit = defineEmits(['onDelete', 'onEdit', 'onFilter'])
-const emitNewEvent = (name: 'onDelete' | 'onEdit' | 'onFilter', event: Event) => {
+const emit = defineEmits(['onDelete', 'onEdit', 'onFilter', 'onSelect'])
+const emitNewEvent = (name: 'onDelete' | 'onEdit' | 'onFilter' | 'onSelect', event: Event) => {
   emit(name, event)
 }
 
@@ -42,6 +42,7 @@ const onPageChange = (event: DataTablePageEvent) => {
     v-bind="$props"
     @delete="(e: Event) => emitNewEvent('onDelete', e)"
     @filter="(e: Event) => emitNewEvent('onFilter', e)"
+    @selected="(e: Event) => emitNewEvent('onSelect', e)"
     @open-edit="(e: Event) => emitNewEvent('onEdit', e)"
   >
     <template #columns>

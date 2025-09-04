@@ -1,14 +1,28 @@
 <script setup lang="ts">
-import type { CustomFormProps, Empresa, Fornecedor, PaginatedResponse } from '@/types'
-import { defineEmits, ref, useTemplateRef } from 'vue'
-import { EntityTable } from '@/components'
-import EmpresaForm from './EmpresaForm.vue'
-import DialogButton from '@/components/buttons/DialogButton.vue'
-import { useDelete, useGet } from '@/composables/useApi'
+import type { CustomTableFormProps, Empresa, Fornecedor, PaginatedResponse } from '@/types'
+import { defineEmits, ref } from 'vue'
+import {
+  useToast,
+  type DataTableFilterEvent,
+  type DataTableFilterMetaData,
+  type DataTablePageEvent,
+} from 'primevue'
+import { EntityTable, DialogButton } from '@/components'
+import { useDelete, useGet, usePost } from '@/composables/useApi'
 import FornecedorList from '@/views/fornecedor/fragments/FornecedorList.vue'
-import { useToast, type DataTablePageEvent } from 'primevue'
+import EmpresaForm from './EmpresaForm.vue'
 
-const { refetch } = defineProps<CustomFormProps<Empresa>>()
+/** Types */
+type VincularFornecedorResponse = {
+  empresa: Empresa
+  avisos?: string[]
+}
+type VincularFornecedorBody = {
+  fornecedorIds: string[]
+}
+
+/** Props, composables, emits */
+const { refetch } = defineProps<CustomTableFormProps<Empresa>>()
 
 const toast = useToast()
 
@@ -42,21 +56,64 @@ const fetchFornecedores = (page = 0) => {
   })
 }
 
+const refetchFornecedor = (page = 0) => {
+  fetchFornecedores(page)
+  fornecedores.value = response.value?.content || []
+}
+
 const onPageChange = (event: DataTablePageEvent) => {
   fetchFornecedores(event.page)
   page.value = event.page || 0
 }
 
-const handleFornecedorList = (data: Fornecedor[] | undefined) => {
-  fetchFornecedores(page.value)
-  /* fornecedores.value = fornecedores.value.filter((x) => !data?.some((f) => f.id === x.id))
-   */
+const updateFilter = (e: DataTableFilterEvent) => {
+  filter.value = {
+    nome: (e.filters?.nome as DataTableFilterMetaData)?.value ?? '',
+    documento: (e.filters?.documento as DataTableFilterMetaData).value ?? '',
+  }
+  fetchFornecedores()
+}
+
+/** Vincular fornecedores */
+const fornecedoresSelecionados = ref<Fornecedor[]>()
+const {
+  post,
+  data,
+  isLoading: postLoading,
+  error: postError,
+} = usePost<VincularFornecedorResponse, VincularFornecedorBody>()
+const handleVincularFornecedor = (empresa: Empresa) => {
+  const body = {
+    fornecedorIds: fornecedoresSelecionados.value?.map((f) => f.id) ?? [],
+  }
+  post(`/empresas/${empresa.id}/fornecedores`, body).then(() => {
+    if (!postError.value) {
+      if (data.value?.avisos) {
+        toast.add({
+          severity: 'warn',
+          summary: `Aviso: falha ao vincular fornecedor`,
+          detail: 'Erro durante a operação \n\n' + '-' + data.value.avisos.join('\n - '),
+          life: 10000,
+        })
+      } else {
+        toast.add({
+          severity: 'success',
+          summary: `Incluir fornecedor`,
+          detail: `Fornecedor(es) vinculados com sucesso`,
+          life: 3000,
+        })
+      }
+
+      fornecedoresSelecionados.value = []
+    }
+    refetch(page.value)
+  })
 }
 
 /** Desvincular fornecedor */
 const { del, isLoading: deleteLoading, error: deleteError } = useDelete<Fornecedor>()
 
-const removerFornecedor = async (empresaId: string, fornecedorId: string) => {
+const desvincularFornecedor = async (empresaId: string, fornecedorId: string) => {
   await del(`/empresas/${empresaId}/fornecedores?fornecedorIds=${fornecedorId}`).then(() => {
     if (!deleteError.value) {
       toast.add({
@@ -69,6 +126,8 @@ const removerFornecedor = async (empresaId: string, fornecedorId: string) => {
     refetch(page.value)
   })
 }
+
+const dialogVisibility = ref(false)
 </script>
 
 <template>
@@ -101,10 +160,13 @@ const removerFornecedor = async (empresaId: string, fornecedorId: string) => {
         <div class="header inline-flex gap-6 justify-between items-center">
           <span class="text-xl font-semibold">Fornecedores vinculados</span>
           <DialogButton
+            v-model="dialogVisibility"
             ref="dialog"
-            :button="{ label: 'Incluir fornecedor', variant: 'outlined' }"
+            :button="{ label: 'Incluir fornecedor' }"
+            variant="outlined"
+            severity="contrast"
             :dialog="{ header: 'Vincular fornecedor' }"
-            @click="handleFornecedorList(data.fornecedores)"
+            @click="fetchFornecedores(page)"
           >
             <div class="dialog-container flex flex-col gap-4">
               <FornecedorList
@@ -114,21 +176,26 @@ const removerFornecedor = async (empresaId: string, fornecedorId: string) => {
                 :loading
                 :response
                 :onPageChange
-                :refetch
+                :refetch="refetchFornecedor"
+                @on-select="(f: Fornecedor[]) => (fornecedoresSelecionados = f)"
+                @on-filter="(e: DataTableFilterEvent) => updateFilter(e)"
               />
               <div class="footer w-full inline-flex justify-end gap-2">
                 <Button
                   label="Cancelar"
                   severity="secondary"
-                  @click="console.log('cancelar')"
+                  @click="dialogVisibility = !dialogVisibility"
                   class="w-24"
                 />
                 <Button
                   label="Salvar"
                   class="w-24"
-                  :disabled="loading"
-                  :loading="loading"
-                  @click="console.log('salvar')"
+                  :disabled="postLoading || !fornecedoresSelecionados"
+                  v-tooltip.top="
+                    !fornecedoresSelecionados ? 'Selecione ao menos um fornecedor' : null
+                  "
+                  :loading="postLoading"
+                  @click="handleVincularFornecedor(data)"
                 />
               </div>
             </div>
@@ -153,8 +220,8 @@ const removerFornecedor = async (empresaId: string, fornecedorId: string) => {
                 severity="secondary"
                 variant="outlined"
                 size="small"
-                @click="removerFornecedor(data.id, fornecedorData.id)"
-                class="!text-red-800 !hover:!bg-red-200 hover:!border-red-200"
+                @click="desvincularFornecedor(data.id, fornecedorData.id)"
+                class="!text-red-800 !hover:!bg-red-200 hover:!border-red-200 whitespace-nowrap"
               />
             </template>
           </Column>
