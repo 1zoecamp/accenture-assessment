@@ -1,0 +1,42 @@
+services:
+  # Serviço do Banco de Dados PostgreSQL
+  db:
+    image: postgres:16-alpine
+    container_name: postgres_db
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: admin1234
+      POSTGRES_DB: accenture_assessment      
+    volumes:
+      - postgres-data:/var/lib/postgresql/data
+    ports:
+      - "5432:5432"
+    restart: unless-stopped
+
+  # Serviço do Backend Spring Boot
+  backend:
+    build: ./backend
+    container_name: spring_backend
+    ports:
+      - "8080:8080"
+    environment:
+      # Aponta para o serviço 'db' do Docker, não para 'localhost'
+      SPRING_DATASOURCE_URL: jdbc:postgresql://db:5432/accenture_assessment
+      SPRING_DATASOURCE_USERNAME: postgres
+      SPRING_DATASOURCE_PASSWORD: admin1234
+    depends_on:
+      - db # Garante que o banco de dados inicie antes do backend
+    restart: on-failure
+
+  # Serviço do Frontend Vue/Nginx
+  frontend:
+    build: ./frontend
+    container_name: vue_frontend
+    ports:
+      - "5173:80" # Acessa via localhost:5173, que internamente usa a porta 80 do Nginx
+    depends_on:
+      - backend # Garante que o backend inicie antes (boa prática)
+    restart: on-failure
+
+volumes:
+  postgres-data: # Volume para persistir os dados do banco
