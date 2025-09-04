@@ -11,10 +11,10 @@ const router = useRouter()
 
 /** Helpers */
 const options = ref([
-  { name: 'Lista de Fornecedores', value: 'fornecedor' },
   { name: 'Lista de Empresas', value: 'empresa' },
+  { name: 'Lista de Fornecedores', value: 'fornecedor' },
 ])
-const value = ref({ name: 'Lista de Fornecedores', value: 'fornecedor' })
+const value = ref({ name: 'Lista de Empresas', value: 'empresa' })
 </script>
 <template>
   <SelectButton

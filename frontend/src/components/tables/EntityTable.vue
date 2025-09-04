@@ -5,10 +5,13 @@ import { ref } from 'vue'
 import { FilterMatchMode } from '@primevue/core/api'
 import DialogButton from '../buttons/DialogButton.vue'
 
-defineProps<CustomFormProps<T>>()
+defineProps<CustomFormProps<T> & { selectMode?: boolean }>()
 
 const confirm = useConfirm()
 const emit = defineEmits(['delete', 'openEdit', 'filter', 'closeEdit'])
+
+const expandedRows = ref({})
+const selectedRows = ref()
 
 const deleteRegistro = (registro: T) => {
   confirm.require({
@@ -42,6 +45,8 @@ const filters = ref<DataTableFilterMeta>({
 
     <div v-else class="datatable-container p-2 bg-slate-100 shadow-sm">
       <DataTable
+        v-model:expandedRows="expandedRows"
+        v-model:selection="selectedRows"
         v-model:filters="filters"
         dataKey="id"
         :value="registros"
@@ -50,7 +55,8 @@ const filters = ref<DataTableFilterMeta>({
         :rows="10"
         filterDisplay="menu"
         lazy
-        removableSort
+        scrollable
+        scrollHeight="35rem"
         stripedRows
         paginator
         paginatorTemplate="FirstPageLink PrevPageLink PageLinks CurrentPageReport NextPageLink LastPageLink RowsPerPageDropdown"
@@ -65,9 +71,13 @@ const filters = ref<DataTableFilterMeta>({
           <Button severity="contrast" icon="pi pi-refresh" text @click="refetch()" />
         </template>
 
+        <!-- Expansão de linha / selectMode -->
+        <Column v-if="selectMode" selectionMode="multiple" headerStyle="width: 3rem" />
+        <Column v-else expander class="w-[5rem]" />
+
         <!-- Definição das colunas da tabela -->
         <slot name="columns" />
-        <Column header="Ações" field="tipoPessoa" class="w-32">
+        <Column v-if="!selectMode" header="Ações" field="tipoPessoa" class="w-32">
           <template #body="{ data }">
             <div class="table-actions-group inline-flex gap-2">
               <DialogButton
@@ -91,6 +101,13 @@ const filters = ref<DataTableFilterMeta>({
             </div>
           </template>
         </Column>
+
+        <!-- Expansão de linha: conteúdo -->
+        <template #expansion="{ data }: { data: T }">
+          <div class="bg-slate-100 p-3 rounded-md">
+            <slot name="expanded" :data />
+          </div>
+        </template>
         <!-- Demais estados da tabela -->
         <template #empty>
           <div class="text-center p-4 text-gray-500">Nenhum registro encontrado.</div>
