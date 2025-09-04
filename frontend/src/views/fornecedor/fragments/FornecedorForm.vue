@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import type { FormInstance, FormSubmitEvent } from '@primevue/forms'
-import type { FormError, Fornecedor } from '@/types'
+import type { Fornecedor, ViaCepResponse } from '@/types'
 import { computed, inject, onMounted, ref, useTemplateRef, watch } from 'vue'
 import dayjs from 'dayjs'
 import { z } from 'zod'
@@ -11,21 +11,8 @@ import { isValidCNPJ, isValidCPF } from '@/utils'
 
 /** Types */
 type FornecedorData = Omit<Fornecedor, 'id'>
-type ViaCepResponse = {
-  cep: string
-  logradouro: string
-  complemento: string
-  bairro: string
-  localidade: string
-  uf: string
-  ibge: string
-  gia: string
-  ddd: string
-  siafi: string
-  erro?: boolean
-}
 
-/** Props e Emits */
+/** Props, composables, emits, inject */
 const {
   initialData,
   refetch,
@@ -36,7 +23,6 @@ const {
   editMode?: boolean
 }>()
 
-/** Composables, emits */
 const formTemplateRef = useTemplateRef<FormInstance>('formRef')
 const toast = useToast()
 
@@ -46,7 +32,6 @@ const { isLoading: putLoading, error: putError, put } = usePut<FornecedorData>()
 
 const emits = defineEmits(['formDelete'])
 
-/** Inject/provide */
 const closeDialog = inject('closeDialog') as () => void
 
 /** Form data */

@@ -72,7 +72,7 @@ const filters = ref<DataTableFilterMeta>({
         @update:selection="(e: DataTableRowSelectEvent) => emit('selected', e)"
       >
         <!-- Configuração do footer (paginação) -->
-        <template #paginatorstart></template>
+        <template #paginatorstart />
         <template #paginatorend>
           <Button severity="contrast" icon="pi pi-refresh" text @click="refetch()" />
         </template>
@@ -114,11 +114,11 @@ const filters = ref<DataTableFilterMeta>({
             <slot name="expanded" :data />
           </div>
         </template>
+
         <!-- Demais estados da tabela -->
         <template #empty>
           <div class="text-center p-4 text-gray-500">Nenhum registro encontrado.</div>
         </template>
-
         <template #loading>
           <div class="h-96 p-4 flex items-center justify-center">
             <i class="pi pi-spin pi-spinner !text-3xl text-slate-600"></i>

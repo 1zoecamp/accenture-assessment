@@ -10,9 +10,9 @@ defineProps<{ error: AxiosError<unknown, any> | null }>()
     role="alert"
   >
     <p class="font-bold">Ocorreu um erro ao buscar os dados</p>
-    <p>{{ error.message }}</p>
-    <pre v-if="error.response?.data" class="mt-2 text-sm bg-red-50 p-2 rounded">{{
-      JSON.stringify(error.response.data, null, 2)
-    }}</pre>
+    <span>{{ error.message }}</span>
+    <pre v-if="error.response?.data" class="mt-2 text-sm bg-red-50 p-2 rounded">
+      {{ JSON.stringify(error.response.data, null, 2) }}
+    </pre>
   </div>
 </template>

@@ -2,7 +2,7 @@ import type { Empresa } from "./empresa";
 import type { Endereco } from "./endereco";
 
 /**
- * Define a estrutura principal do Fornecedor
+ * Define a estrutura principal do Fornecedor, que pode ser vinculado à Empresa
  */
 export interface Fornecedor {
   id: string;

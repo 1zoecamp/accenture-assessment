@@ -1,8 +1,7 @@
 <script setup lang="ts">
 import type { FormInstance, FormSubmitEvent } from '@primevue/forms'
-import type { FormError, Empresa } from '@/types'
-import { computed, inject, onMounted, ref, useTemplateRef, watch } from 'vue'
-import dayjs from 'dayjs'
+import type { Empresa, ViaCepResponse } from '@/types'
+import { inject, onMounted, ref, useTemplateRef, watch } from 'vue'
 import { z } from 'zod'
 import { useToast } from 'primevue/usetoast'
 import { zodResolver } from '@primevue/forms/resolvers/zod'
@@ -11,21 +10,8 @@ import { isValidCNPJ } from '@/utils'
 
 /** Types */
 type EmpresaData = Omit<Empresa, 'id'>
-type ViaCepResponse = {
-  cep: string
-  logradouro: string
-  complemento: string
-  bairro: string
-  localidade: string
-  uf: string
-  ibge: string
-  gia: string
-  ddd: string
-  siafi: string
-  erro?: boolean
-}
 
-/** Props e Emits */
+/** Props, composables, emits, inject */
 const {
   initialData,
   refetch,
@@ -36,7 +22,6 @@ const {
   editMode?: boolean
 }>()
 
-/** Composables, emits */
 const formTemplateRef = useTemplateRef<FormInstance>('formRef')
 const toast = useToast()
 
@@ -46,7 +31,6 @@ const { isLoading: putLoading, error: putError, put } = usePut<EmpresaData>()
 
 const emits = defineEmits(['formDelete'])
 
-/** Inject/provide */
 const closeDialog = inject('closeDialog') as () => void
 
 /** Form data */
@@ -186,6 +170,7 @@ const onFormSubmit = (e: FormSubmitEvent) => {
     @submit="onFormSubmit"
     class="flex flex-col gap-4 w-full"
   >
+    <!-- Informações gerais -->
     <span class="infos-gerais--label font-lg font-semibold text-slate-600">Informações gerais</span>
     <div
       class="infos-gerais--container grid grid-cols-12 gap-y-4 gap-x-2 p-4 rounded-lg bg-slate-100"
@@ -223,6 +208,8 @@ const onFormSubmit = (e: FormSubmitEvent) => {
         </Message>
       </div>
     </div>
+
+    <!-- Endereço -->
     <span class="endereco--label font-lg font-semibold text-slate-600 pt-4">Endereço</span>
     <div class="endereco--container flex flex-col gap-4 p-4 rounded-lg bg-slate-100">
       <Message
@@ -344,6 +331,8 @@ const onFormSubmit = (e: FormSubmitEvent) => {
         </div>
       </div>
     </div>
+
+    <!-- Footer -->
     <div
       :class="[
         'form--footer w-full inline-flex gap-2',

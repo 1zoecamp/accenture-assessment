@@ -3,9 +3,6 @@ import type { SelectButtonChangeEvent } from 'primevue'
 import { ref } from 'vue'
 import { useRouter } from 'vue-router'
 
-/** Types */
-type ChangeEvent = SelectButtonChangeEvent
-
 /** Composables */
 const router = useRouter()
 
@@ -14,6 +11,7 @@ const options = ref([
   { name: 'Lista de Empresas', value: 'empresa' },
   { name: 'Lista de Fornecedores', value: 'fornecedor' },
 ])
+
 const value = ref({ name: 'Lista de Empresas', value: 'empresa' })
 </script>
 <template>
@@ -24,7 +22,7 @@ const value = ref({ name: 'Lista de Empresas', value: 'empresa' })
     optionLabel="name"
     :pt="{ pcToggleButton: { root: '!bg-slate-100 text-slate-600' } }"
     @change="
-      (e: ChangeEvent) => {
+      (e: SelectButtonChangeEvent) => {
         if (e.value) {
           router.push({ name: e.value.value })
         }

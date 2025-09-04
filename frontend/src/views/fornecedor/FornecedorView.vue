@@ -54,16 +54,26 @@ const updateFilter = (e: DataTableFilterEvent) => {
 }
 
 /** Controle da deleção */
-const { del, isLoading: deleteLoading, error: deleteError } = useDelete<Fornecedor>()
+const { del, error: deleteError } = useDelete<Fornecedor>()
 
 const deleteFornecedor = async (fornecedor: Fornecedor) => {
   await del(`/fornecedores/${fornecedor.id}`).then(() => {
-    toast.add({
-      severity: 'success',
-      summary: `Fornecedor excluído`,
-      detail: `Fornecedor ${fornecedor.nome} (${fornecedor.documento}) excluído com sucesso`,
-      life: 3000,
-    })
+    if (!deleteError.value) {
+      toast.add({
+        severity: 'success',
+        summary: `Fornecedor excluído`,
+        detail: `Fornecedor ${fornecedor.nome} (${fornecedor.documento}) excluído com sucesso`,
+        life: 3000,
+      })
+    } else {
+      toast.add({
+        severity: 'error',
+        summary: 'Algo deu errado',
+        detail: deleteError.value?.response?.data,
+        life: 10000,
+      })
+    }
+
     refetch(page.value)
   })
 }

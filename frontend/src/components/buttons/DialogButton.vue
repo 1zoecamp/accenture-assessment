@@ -39,6 +39,7 @@ watch(
     modal
     :header="dialog.header"
     :draggable="false"
+    class="!w-[90%] xl:!w-[70rem]"
     :style="{ width: '70rem' }"
     @after-hide="emits('close')"
     @show="visibility = true"

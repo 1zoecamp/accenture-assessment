@@ -7,6 +7,7 @@ import { useDelete, useGet } from '@/composables/useApi'
 import EmpresaList from './fragments/EmpresaList.vue'
 import EmpresaForm from './fragments/EmpresaForm.vue'
 
+/** Refs, composables */
 const page = ref(0)
 const registros = ref<Empresa[]>([])
 
@@ -36,12 +37,21 @@ const { del, isLoading: deleteLoading, error: deleteError } = useDelete<Empresa>
 
 const deleteEmpresa = async (empresa: Empresa) => {
   await del(`/empresas/${empresa.id}`).then(() => {
-    toast.add({
-      severity: 'success',
-      summary: `Empresa excluída`,
-      detail: `Empresa ${empresa.nomeFantasia} (${empresa.cnpj}) excluída com sucesso`,
-      life: 3000,
-    })
+    if (!deleteError.value) {
+      toast.add({
+        severity: 'success',
+        summary: `Empresa excluída`,
+        detail: `Empresa ${empresa.nomeFantasia} (${empresa.cnpj}) excluída com sucesso`,
+        life: 3000,
+      })
+    } else {
+      toast.add({
+        severity: 'error',
+        summary: 'Algo deu errado',
+        detail: deleteError.value?.response?.data,
+        life: 10000,
+      })
+    }
     refetch(page.value)
   })
 }
@@ -63,10 +73,10 @@ onMounted(() => {
       <EmpresaList
         :error
         :registros
-        :loading
         :response
-        :onPageChange
         :refetch
+        :loading
+        :onPageChange
         @on-delete="(e: Empresa) => deleteEmpresa(e)"
       />
     </template>

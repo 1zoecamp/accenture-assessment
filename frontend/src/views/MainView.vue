@@ -10,7 +10,9 @@ import { ViewGroupButton } from '@/components'
       <h1 class="title text-3xl font-semibold">
         Sistema de Gerenciamento de Empresas e Fornecedores
       </h1>
-      <span class="test-label p-2 rounded-md text-sm bg-purple-100 text-purple-700">
+      <span
+        class="test-label p-2 rounded-md text-sm bg-purple-100 text-purple-700 whitespace-nowrap"
+      >
         Teste Accenture - Desenvolvedor Full Stack
       </span>
     </div>
