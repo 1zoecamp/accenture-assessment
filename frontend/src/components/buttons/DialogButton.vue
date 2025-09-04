@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import type { ButtonProps } from 'primevue'
-import { provide, ref } from 'vue'
+import { provide, ref, watch } from 'vue'
 
 defineProps<{
   button?: ButtonProps & { tooltip?: string }
@@ -15,8 +15,17 @@ const handleClick = () => {
   emits('open')
 }
 
+/** Controle de fechamento da modal */
 provide('closeDialog', () => (visible.value = false))
-provide('openDialog', () => (visible.value = true))
+
+// Alternativa
+const visibility = defineModel<boolean>()
+watch(
+  () => visibility.value,
+  (newValue) => {
+    if (newValue == false) visible.value = false
+  },
+)
 </script>
 <template>
   <Button
@@ -29,8 +38,10 @@ provide('openDialog', () => (visible.value = true))
     v-model:visible="visible"
     modal
     :header="dialog.header"
+    :draggable="false"
     :style="{ width: '70rem' }"
     @after-hide="emits('close')"
+    @show="visibility = true"
   >
     <slot />
   </Dialog>

@@ -19,7 +19,7 @@ export type FormError = Record<string, Error[]>
 
 
 /** Props padrão do formulário */
-export type CustomFormProps<T> = {
+export type CustomTableFormProps<T> = {
   error: AxiosError | null
   registros: Array<T>
   loading: boolean
